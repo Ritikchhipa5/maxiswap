@@ -59,18 +59,39 @@ const Td2: React.FC<PropsWithChildren> = ({ children }) => {
 
 export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
   const { isMobile } = useMatchBreakpoints()
-  const { data, status } = useCampaigns({ id })
+  // const { data, status } = useCampaigns({ id })
+  const status = 'Fetching'
+  const data = [
+    {
+      tokenAddress: '',
+      raisedToken: '',
+      isLive: '',
+      softCap: '10000000000000000',
+      hardCap: '10000000000000000',
+      start_date: 100000000,
+      end_date: 100000000000,
+      rate: '10000000000000000',
+      min_allowed: '0',
+      max_allowed: '10000000000000000',
+      pool_rate: '10000000',
+      lock_duration: '10000000000000000',
+      liquidity_rate: 10000,
+      collected: '',
+      progress: Number(10) / Number(20),
+      hardCapProgress: Number(30) / Number(40),
+    },
+  ]
   const campaign = data?.[0]
   const chain = useActiveChain()
   const native = useToken(campaign?.raisedToken)
   const getAddressUrl = (add: string) => `${chain?.blockExplorers.default.url}/address/${add}`
   const flags = useFlags()
   useEffect(() => {
-    if (!campaign) return
-    console.log(
-      'Total Contributed: ',
-      utils.formatEther(campaign?.softCap.mul(Math.floor(campaign.progress * 10000)).div(10000)),
-    )
+    // if (!campaign) return
+    // console.log(
+    //   'Total Contributed: ',
+    //   utils.formatEther(campaign?.softCap.mul(Math.floor(campaign.progress * 10000)).div(10000)),
+    // )
   }, [campaign?.progress, campaign?.softCap])
 
   const token = useToken(campaign?.tokenAddress)
@@ -141,14 +162,14 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                         </Td2>
                       </RowStyled>
                     ) : undefined}
-                    {!campaign.min_allowed.isZero() ? (
-                      <RowStyled>
-                        <Td1>Minimum Contribution</Td1>
-                        <Td2>
-                          {formatAmount(utils.formatUnits(campaign.min_allowed, 18))} {native?.symbol}
-                        </Td2>
-                      </RowStyled>
-                    ) : undefined}
+
+                    <RowStyled>
+                      <Td1>Minimum Contribution</Td1>
+                      <Td2>
+                        {formatAmount(utils.formatUnits(campaign.min_allowed, 18))} {native?.symbol}
+                      </Td2>
+                    </RowStyled>
+
                     <RowStyled>
                       <Td1>Maximum Contribution</Td1>
                       <Td2>
@@ -200,17 +221,17 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                               <InfoTooltip text="That percentage of the total raised amount that will be added as liquidity." />
                             </StyledFlex>
                           </Td1>
-                          <Td2>{campaign.liquidity_rate.toNumber() / 100}%</Td2>
+                          <Td2>{campaign.liquidity_rate / 100}%</Td2>
                         </RowStyled>
                       </>
                     )}
                     <RowStyled>
                       <Td1>Starting at</Td1>
-                      <Td2>{renderDate(campaign.start_date.mul(1000).toNumber())}</Td2>
+                      <Td2>{renderDate(campaign.start_date)}</Td2>
                     </RowStyled>
                     <RowStyled>
                       <Td1>Ending at</Td1>
-                      <Td2>{renderDate(campaign.end_date.mul(1000).toNumber())}</Td2>
+                      <Td2>{renderDate(campaign.end_date)}</Td2>
                     </RowStyled>
                   </tbody>
                 </Table>

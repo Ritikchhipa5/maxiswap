@@ -8,6 +8,7 @@ import rocket from './images/rocket.png'
 import Image from 'next/image'
 import { tokens } from '@pancakeswap/ui'
 import CampaignCardDummy from './components/CampaignCardDummy'
+import LaunchpadCard from './components/LaunchpadCard'
 
 const H1 = styled(Heading)`
   font-size: 32px;
@@ -53,10 +54,10 @@ const LaunchpadList: React.FC = () => {
   return (
     <Box background={isDark ? 'linear-gradient(135deg, #1d1c21 0%, #141317 100%)' : undefined}>
       <PageHeader
-        background={`url(${header.src})`}
+        // background={`url(${header.src})`}
         style={{
           backgroundPosition: 'right bottom',
-          backgroundColor: '#E66280',
+          backgroundColor: '#1d133c',
           backgroundRepeat: 'no-repeat',
         }}
       >
@@ -69,10 +70,10 @@ const LaunchpadList: React.FC = () => {
               Launchpad
             </H1>
             <H2 color="#F4EEFF">Be the first investing in new Projects</H2>
-            <Filler />
           </Flex>
         </Flex>
       </PageHeader>
+
       <Page>
         {campaigns.data?.length > 0 && (
           <Grid gridGap="32px" gridTemplateColumns={['1fr', null, null, 'repeat(2, 1fr)', 'repeat(3, 1fr)']}>
@@ -86,6 +87,7 @@ const LaunchpadList: React.FC = () => {
             )}
           </Grid>
         )}
+        <LaunchpadCard />
         <Flex justifyContent="center" width="100%">
           <Rocket2>
             <Image src={rocket.src} alt="Rocket" width={96} height={96} />
