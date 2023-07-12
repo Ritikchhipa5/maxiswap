@@ -2,11 +2,16 @@ import { Box, Button, Card, Flex, Progress, Text } from '@pancakeswap/uikit'
 import styled, { useTheme } from 'styled-components'
 import CampaignCardHeader from './CampaignCardHeader'
 import { renderDate } from 'utils/renderDate'
+import { useContractReading, useGetTokenomics, useGetTokenomics256 } from '../contract/contractRead'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { formatEther } from '@ethersproject/units'
+import moment from 'moment'
 
 function LaunchpadCard() {
   const { isDark, colors } = useTheme()
+  const [ICOData, setICOData] = useState<any>(null)
   const StyledCard = styled(Card)`
     align-self: baseline;
     max-width: 100%;
@@ -41,6 +46,27 @@ function LaunchpadCard() {
     return `${whole}.${decimal.slice(0, 2)}`
   }
 
+  const { deployedContracts } = useContractReading()
+
+  const tokenomicsData = useGetTokenomics(deployedContracts[deployedContracts.length - 1])
+  const tokenomics256Data = useGetTokenomics256(deployedContracts[deployedContracts.length - 1])
+  // const token = await fetchToken({
+  //   address: data2[0],
+  // })
+  // console.log(token)
+  const DATA = {
+    startTime: moment(parseInt(tokenomicsData[0])).format('LLL'),
+    endTime: moment(parseInt(tokenomicsData[1])).format('LLL'),
+    raisedFund: formatEther(tokenomicsData[2]),
+    softCap: formatEther(tokenomicsData[3]),
+    hardCap: formatEther(tokenomicsData[4]),
+    isSaleFinalize: tokenomics256Data[3],
+    tokenDecimal: parseInt(tokenomics256Data[4]),
+    vestingCyclePer: parseInt(tokenomics256Data[2]),
+    vestingCycleTimeInterval: parseInt(tokenomics256Data[1]),
+    // ...token,
+  }
+  console.log(DATA)
   return (
     <div>
       <StyledCard>

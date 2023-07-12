@@ -196,66 +196,66 @@ const config: (
       showItemsOnMobile: false,
       items: [],
     },
-    // {
-    //   label: t('More'),
-    //   icon: MoreHorizontalIcon,
-    //   showItemsOnMobile: true,
-    //   hideSubNav: true,
-    //   supportChainIds: [...SUPPORT_INFO, ...SUPPORT_LOCKS],
-    //   items: [
-    //     {
-    //       label: t('Info'),
-    //       href: '/info',
-    //       supportChainIds: SUPPORT_INFO,
-    //     },
-    //     {
-    //       label: t('Locks'),
-    //       href: '/locks',
-    //       supportChainIds: SUPPORT_LOCKS,
-    //     },
-    //     {
-    //       label: t('KYC'),
-    //       href: '/kyc',
-    //       supportChainIds: [1116],
-    //       items: [
-    //         {
-    //           label: t('KYC'),
-    //           href: '/kyc',
-    //         },
-    //         {
-    //           label: t('KYC Checker'),
-    //           href: '/kyc-checker',
-    //         },
-    //       ],
-    //     },
+    {
+      label: t('More'),
+      icon: MoreHorizontalIcon,
+      showItemsOnMobile: true,
+      hideSubNav: true,
+      supportChainIds: [...SUPPORT_INFO, ...SUPPORT_LOCKS],
+      items: [
+        //     {
+        //       label: t('Info'),
+        //       href: '/info',
+        //       supportChainIds: SUPPORT_INFO,
+        //     },
+        {
+          label: t('Locks'),
+          href: '/locks',
+          supportChainIds: SUPPORT_LOCKS,
+        },
+        //     {
+        //       label: t('KYC'),
+        //       href: '/kyc',
+        //       supportChainIds: [1116],
+        //       items: [
+        //         {
+        //           label: t('KYC'),
+        //           href: '/kyc',
+        //         },
+        //         {
+        //           label: t('KYC Checker'),
+        //           href: '/kyc-checker',
+        //         },
+        //       ],
+        //     },
 
-    //     {
-    //       label: t('KYC Checker'),
-    //       href: '/kyc-checker',
-    //       supportChainIds: [1116],
-    //       items: [
-    //         {
-    //           label: t('KYC'),
-    //           href: '/kyc',
-    //         },
-    //         {
-    //           label: t('KYC Checker'),
-    //           href: '/kyc-checker',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       label: t('Wiki'),
-    //       href: 'https://wiki.icecreamswap.com',
-    //       type: DropdownMenuItemType.EXTERNAL_LINK,
-    //     },
-    //     // {
-    //     //   label: t('Create Token'),
-    //     //   href: '/create-token',
-    //     //   supportChainIds: SUPPORT_LOCKS,
-    //     // },
-    //   ].map((item) => addMenuItemSupported(item, chainId)),
-    // },
+        //     {
+        //       label: t('KYC Checker'),
+        //       href: '/kyc-checker',
+        //       supportChainIds: [1116],
+        //       items: [
+        //         {
+        //           label: t('KYC'),
+        //           href: '/kyc',
+        //         },
+        //         {
+        //           label: t('KYC Checker'),
+        //           href: '/kyc-checker',
+        //         },
+        //       ],
+        //     },
+        //     {
+        //       label: t('Wiki'),
+        //       href: 'https://wiki.icecreamswap.com',
+        //       type: DropdownMenuItemType.EXTERNAL_LINK,
+        //     },
+        //     // {
+        //     //   label: t('Create Token'),
+        //     //   href: '/create-token',
+        //     //   supportChainIds: SUPPORT_LOCKS,
+        //     // },
+      ].map((item) => addMenuItemSupported(item, chainId)),
+    },
     /*
     {
       label: '',

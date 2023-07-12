@@ -8,6 +8,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { chains as CHAINS } from '@maxiproswap/constants'
+import { polygonMumbai } from 'wagmi/chains'
 
 const getNodeRealUrl = (networkName: string) => {
   let host = null
@@ -43,13 +44,16 @@ const getNodeRealUrl = (networkName: string) => {
   }
 }
 
-export const { provider, chains } = configureChains(CHAINS, [
-  jsonRpcProvider({
-    rpc: (chain) => {
-      return getNodeRealUrl(chain.network) || { http: chain.rpcUrls.default }
-    },
-  }),
-])
+export const { provider, chains } = configureChains(
+  [...CHAINS, polygonMumbai],
+  [
+    jsonRpcProvider({
+      rpc: (chain) => {
+        return getNodeRealUrl(chain?.network) || { http: chain?.rpcUrls.default }
+      },
+    }),
+  ],
+)
 
 export const injectedConnector = new InjectedConnector({
   chains,
