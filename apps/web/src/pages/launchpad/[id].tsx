@@ -3,7 +3,7 @@ import { CampaignOverview } from 'views/Launchpad/CampaignOverview'
 
 const LaunchpadPage = () => {
   const { id } = useRouter()?.query || {}
-  return <CampaignOverview id={Number(id)} />
+  return <CampaignOverview id={id} />
 }
 
 // LaunchpadPage.chains = [1116]

@@ -1,5 +1,5 @@
 import { Button, Flex, Heading, Link, Table, Td, Text, useMatchBreakpoints } from '@pancakeswap/uikit'
-import { PropsWithChildren, useMemo, useCallback, useEffect } from 'react'
+import { PropsWithChildren, useMemo, useCallback, useEffect, useState } from 'react'
 import { FetchStatus } from 'config/constants/types'
 import { BigNumber, utils } from 'ethers'
 import styled from 'styled-components'
@@ -13,6 +13,8 @@ import TokenName from 'views/Locks/components/TokenName'
 import { renderDate } from 'utils/renderDate'
 import InfoTooltip from '@pancakeswap/uikit/src/components/Timeline/InfoTooltip'
 import useNativeCurrency from 'hooks/useNativeCurrency'
+import { formatEther } from '@ethersproject/units'
+import { useGetTokenName, useGetTokenomics, useGetTokenomics256 } from './contract/contractRead'
 
 const RowStyled = styled.tr`
   &:hover {
@@ -57,9 +59,35 @@ const Td2: React.FC<PropsWithChildren> = ({ children }) => {
   return <Td style={{ paddingTop: isMobile ? '12px' : undefined, wordWrap: 'break-word' }}>{children}</Td>
 }
 
-export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
+export const CampaignOverview: React.FC<{ id: any }> = ({ id }) => {
   const { isMobile } = useMatchBreakpoints()
-  // const { data, status } = useCampaigns({ id })
+  const [ICOData, setICOData] = useState<any>(null)
+  const tokenomicsData = useGetTokenomics(id)
+  const tokenomics256Data = useGetTokenomics256(id)
+  const tokenName = useGetTokenName('0x416b3e951bA5ED3Dd2E8210D900370Fa1995BE00')
+
+  useEffect(() => {
+    if (tokenomicsData && tokenomics256Data) {
+      const DATA = {
+        _isSaleFinalize: tokenomicsData?._isSaleFinalize,
+        startTime: parseInt(tokenomics256Data[0]),
+        endTime: parseInt(tokenomics256Data[1]),
+        raisedFund: formatEther(tokenomics256Data[2]),
+        softCap: formatEther(tokenomics256Data[3]),
+        hardCap: formatEther(tokenomics256Data[4]),
+        isSaleFinalize: tokenomicsData[3],
+        tokenDecimal: parseInt(tokenomicsData[4]),
+        vestingCyclePer: parseInt(tokenomicsData[2]),
+        vestingCycleTimeInterval: parseInt(tokenomicsData[1]),
+        name: tokenName,
+        _tokenContractAddress: tokenomicsData._tokenContractAddress,
+        // ...token,
+      }
+      setICOData(DATA)
+      console.log(DATA, ICOData)
+    }
+  }, [tokenomicsData, tokenomics256Data, tokenName])
+
   const status = 'Fetching'
   const data = [
     {
@@ -126,14 +154,15 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                     <RowStyled>
                       <Td1>Token{isMobile && ':'}</Td1>
                       <Td2>
-                        <TokenName withSymbol address={campaign.tokenAddress} />
+                        {/* <TokenName withSymbol address={campaign.tokenAddress} /> */}
+                        {ICOData?.name}
                       </Td2>
                     </RowStyled>
                     <RowStyled>
                       <Td1>Token Address{isMobile && ':'}</Td1>
                       <Td2>
                         <Link external href={getAddressUrl(campaign.tokenAddress)} display="inline" target="_blank">
-                          {campaign.tokenAddress}
+                          {ICOData?._tokenContractAddress}
                         </Link>
                       </Td2>
                     </RowStyled>
@@ -146,7 +175,8 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                         </StyledFlex>
                       </Td1>
                       <Td2>
-                        {formatAmount(utils.formatUnits(campaign.softCap, 18))} {native?.symbol}
+                        {/* {formatAmount(utils.formatUnits(campaign.softCap, 18))} {native?.symbol} */}
+                        {ICOData?.softCap} MAXL
                       </Td2>
                     </RowStyled>
                     {!isIceSale ? (
@@ -158,34 +188,17 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                           </StyledFlex>
                         </Td1>
                         <Td2>
-                          {formatAmount(utils.formatUnits(campaign.hardCap, 18))} {native?.symbol}
+                          {/* {formatAmount(utils.formatUnits(campaign.hardCap, 18))} {native?.symbol} */}
+                          {ICOData?.hardCap} MAXL
                         </Td2>
                       </RowStyled>
                     ) : undefined}
 
                     <RowStyled>
-                      <Td1>Minimum Contribution</Td1>
-                      <Td2>
-                        {formatAmount(utils.formatUnits(campaign.min_allowed, 18))} {native?.symbol}
-                      </Td2>
-                    </RowStyled>
-
-                    <RowStyled>
-                      <Td1>Maximum Contribution</Td1>
-                      <Td2>
-                        {formatAmount(utils.formatUnits(campaign.max_allowed, 18))} {native?.symbol}
-                      </Td2>
-                    </RowStyled>
-                    <RowStyled>
-                      <Td1>Rate</Td1>
-                      <Td2>
-                        {formatAmount(utils.formatUnits(campaign.rate, token?.decimals))} {token?.symbol} per{' '}
-                        {native?.symbol}
-                      </Td2>
-                    </RowStyled>
-                    <RowStyled>
                       <Td1>Vesting</Td1>
-                      <Td2>50% over 3 months</Td2>
+                      <Td2>
+                        {ICOData?.vestingCyclePer}% over {ICOData?.vestingCycleTimeInterval / 60} minitue
+                      </Td2>
                     </RowStyled>
                     {isIceSale ? (
                       <>
@@ -203,35 +216,21 @@ export const CampaignOverview: React.FC<{ id: number }> = ({ id }) => {
                         <RowStyled>
                           <Td1>
                             <StyledFlex>
-                              Liquidity Rate
-                              <InfoTooltip
-                                text={`The amount of ${token?.symbol} that will be added per ${native?.symbol} as liquidity after the campaign succeeded. This will also determine the starting price after the campaign.`}
-                              />
-                            </StyledFlex>
-                          </Td1>
-                          <Td2>
-                            {formatAmount(utils.formatUnits(campaign.pool_rate, token?.decimals))} {token?.symbol} per{' '}
-                            {native?.symbol}
-                          </Td2>
-                        </RowStyled>
-                        <RowStyled>
-                          <Td1>
-                            <StyledFlex>
-                              Liquidity Percentage
+                              Raised Fund
                               <InfoTooltip text="That percentage of the total raised amount that will be added as liquidity." />
                             </StyledFlex>
                           </Td1>
-                          <Td2>{campaign.liquidity_rate / 100}%</Td2>
+                          <Td2>{ICOData?.raisedFund}</Td2>
                         </RowStyled>
                       </>
                     )}
                     <RowStyled>
                       <Td1>Starting at</Td1>
-                      <Td2>{renderDate(campaign.start_date)}</Td2>
+                      <Td2>{renderDate(ICOData?.startTime ? ICOData?.startTime * 1000 : 0)}</Td2>
                     </RowStyled>
                     <RowStyled>
                       <Td1>Ending at</Td1>
-                      <Td2>{renderDate(campaign.end_date)}</Td2>
+                      <Td2>{renderDate(ICOData?.endTime ? ICOData?.endTime * 1000 : 0)}</Td2>
                     </RowStyled>
                   </tbody>
                 </Table>
